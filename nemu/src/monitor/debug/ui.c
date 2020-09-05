@@ -38,6 +38,37 @@ static int cmd_q(char *args) {
 
 static int cmd_help(char *args);
 
+static int cmd_si(char *args) {
+	int num = 0;
+	if (args == NULL) num = 1;
+	else sscanf(args, "%d", &num);
+	cpu_exec(num);
+	return 0;
+}
+
+static int cmd_info(char *args) {
+	int i;
+	if (args[0] == 'r') {
+		for (i = R_EAX; i <= R_EDI; i++) {
+			printf("%s\t0x%08x\n", regsl[i], reg_l(i));
+		}
+		printf("eip\t0x%08x\n", cpu.eip);
+	}
+	else assert(0);
+	return 0;
+}
+
+static int cmd_x(char *args) {
+	int n, start_address, i;
+	sscanf(args, "%d %x", &n, &start_address);
+	for (i = 1; i <= n; i++) {
+		printf("0x%08x ", swaddr_read(start_address, 4));
+		start_address += 4;
+	}
+	printf("\n");
+	return 0;
+}
+
 static struct {
 	char *name;
 	char *description;
@@ -46,9 +77,10 @@ static struct {
 	{ "help", "Display informations about all supported commands", cmd_help },
 	{ "c", "Continue the execution of the program", cmd_c },
 	{ "q", "Exit NEMU", cmd_q },
-
+	{ "si", "Step into implementation of N instructions after the suspension of execution (when N is unknown, the default is 1)", cmd_si },
+	{ "info", "r for print register state and w for print watchpoint information", cmd_info },
+	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x }
 	/* TODO: Add more commands */
-
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
