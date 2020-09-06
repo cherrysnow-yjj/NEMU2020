@@ -59,13 +59,29 @@ static int cmd_info(char *args) {
 }
 
 static int cmd_x(char *args) {
-	int n, start_address, i;
-	sscanf(args, "%d %x", &n, &start_address);
+	int n, i;
+	swaddr_t start_address;
+	bool suc;
+	char *cmd = strtok(args, " ");
+	sscanf(cmd, "%d", &n);
+	args = cmd + strlen(cmd) + 1;
+	start_address = expr(args, &suc);
+	if (!suc) assert(0);
+	printf("0x%08x: ", start_address);
 	for (i = 1; i <= n; i++) {
 		printf("0x%08x ", swaddr_read(start_address, 4));
 		start_address += 4;
 	}
 	printf("\n");
+	return 0;
+}
+
+static int cmd_p(char *args) {
+	uint32_t num;
+	bool suc;
+	num = expr(args, &suc);
+	if (suc) printf("0x%x:\t%d\n", num, num);
+	else assert(0);
 	return 0;
 }
 
@@ -79,7 +95,8 @@ static struct {
 	{ "q", "Exit NEMU", cmd_q },
 	{ "si", "Step into implementation of N instructions after the suspension of execution (when N is unknown, the default is 1)", cmd_si },
 	{ "info", "r for print register state and w for print watchpoint information", cmd_info },
-	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x }
+	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x },
+	{ "p", "Expression evaluation", cmd_p }
 	/* TODO: Add more commands */
 };
 
