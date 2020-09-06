@@ -166,7 +166,7 @@ uint32_t eval(int l, int r) {
 		Assert(l > r, "something happened!\n");
 		return 0;
 	}
-	if (l == r) {
+	else if (l == r) {
 		uint32_t num = 0;
 		if (tokens[l].type == NUMBER)
 			sscanf(tokens[l].str, "%d", &num);
@@ -203,7 +203,7 @@ uint32_t eval(int l, int r) {
                                         }
                                         num = reg_b(i);
                                 }
-				else assert(1);
+				else assert(0);
 			}
 		}
 		return num;
@@ -219,7 +219,7 @@ uint32_t eval(int l, int r) {
 				case POINTER: return swaddr_read(val, 4);
 				case MINUS: return -val;
 				case '!': return !val;
-				default: Assert(1, "default\n");
+				default: assert(0);
 			}
 		}
 		
