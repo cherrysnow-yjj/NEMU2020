@@ -54,6 +54,9 @@ static int cmd_info(char *args) {
 		}
 		printf("eip\t0x%08x\n", cpu.eip);
 	}
+	else if (args[0] == 'w') {
+		info_wp();
+	}
 	else assert(0);
 	return 0;
 }
@@ -85,6 +88,25 @@ static int cmd_p(char *args) {
 	return 0;
 }
 
+static int cmd_w(char *args) {
+	WP *f;
+	bool suc;
+	f = new_wp();
+	printf("Watchpoint %d: %s\n", f->NO, args);
+	f->val = expr(args, &suc);
+	strcpy(f->str, args);
+	if (!suc) assert(0);
+	printf("Value: %d\n", f->val);
+	return 0;
+}
+
+static int cmd_d(char *args) {
+	int num;
+	sscanf(args, "%d", &num);
+	delete_wp(num);
+	return 0;
+}
+
 static struct {
 	char *name;
 	char *description;
@@ -96,7 +118,9 @@ static struct {
 	{ "si", "Step into implementation of N instructions after the suspension of execution (when N is unknown, the default is 1)", cmd_si },
 	{ "info", "r for print register state and w for print watchpoint information", cmd_info },
 	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x },
-	{ "p", "Expression evaluation", cmd_p }
+	{ "p", "Expression evaluation", cmd_p },
+	{ "w", "Stop the execution of the program if the result of the expression has changed", cmd_w },
+	{ "d", "Delete the Nth watchpoint", cmd_d }
 	/* TODO: Add more commands */
 };
 
