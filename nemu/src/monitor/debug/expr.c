@@ -232,7 +232,7 @@ uint32_t eval(int l, int r) {
 			case '+': return val1 + val2;
 			case '-': return val1 - val2;
 			case '*': return val1 * val2;
-			case '/': return val1 / val2;
+			case '/': return (uint32_t)((int)val1 / (int)val2);
 			case EQ: return val1 == val2;
 			case NEQ: return val1 != val2;
 			case AND: return val1 && val2;
