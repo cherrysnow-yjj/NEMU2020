@@ -213,9 +213,10 @@ uint32_t eval(int l, int r) {
 	}
 	else {
 		int op = dominant_operator(l, r);
-		printf("%d\n", op);
+		printf("op = %d\n", op);
 		if (l == op || tokens[op].type == POINTER || tokens[op].type == MINUS || tokens[op].type == '!') {
 			uint32_t val = eval(l + 1, r);
+			printf("val = %d\n", val);
 			switch(tokens[l].type) {
 				case POINTER: return swaddr_read(val, 4);
 				case MINUS: return -val;
