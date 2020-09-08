@@ -213,7 +213,7 @@ uint32_t eval(int l, int r) {
 	}
 	else {
 		int op = dominant_operator(l, r);
-		printf("%c", tokens[op].type);
+		printf("%d", op);
 		if (l == op || tokens[op].type == POINTER || tokens[op].type == MINUS || tokens[op].type == '!') {
 			uint32_t val = eval(l + 1, r);
 			switch(tokens[l].type) {
