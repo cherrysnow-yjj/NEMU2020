@@ -1,8 +1,9 @@
 #include "prefix/prefix.h"
 
+#include "con-tran/call.h"
+
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
-#include "data-mov/call.h"
 #include "data-mov/push.h"
 
 #include "arith/dec.h"
@@ -21,6 +22,7 @@
 #include "logic/shl.h"
 #include "logic/shr.h"
 #include "logic/shrd.h"
+#include "logic/test.h"
 
 #include "string/rep.h"
 
