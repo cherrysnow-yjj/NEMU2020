@@ -1,6 +1,7 @@
 #include "prefix/prefix.h"
 
 #include "con-tran/call.h"
+#include "con-tran/je.h"
 
 #include "data-mov/mov.h"
 #include "data-mov/xchg.h"
