@@ -2,6 +2,7 @@
 
 #include "con-tran/call.h"
 #include "con-tran/je.h"
+#include "con-tran/jmp.h"
 #include "con-tran/ret.h"
 
 #include "data-mov/mov.h"
