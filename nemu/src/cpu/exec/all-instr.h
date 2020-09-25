@@ -1,6 +1,7 @@
 #include "prefix/prefix.h"
 
 #include "con-tran/call.h"
+#include "con-tran/jbe.h"
 #include "con-tran/je.h"
 #include "con-tran/jmp.h"
 #include "con-tran/ret.h"
