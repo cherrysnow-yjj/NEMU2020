@@ -28,6 +28,7 @@
 #include "logic/not.h"
 #include "logic/xor.h"
 #include "logic/sar.h"
+#include "logic/setne.h"
 #include "logic/shl.h"
 #include "logic/shr.h"
 #include "logic/shrd.h"
