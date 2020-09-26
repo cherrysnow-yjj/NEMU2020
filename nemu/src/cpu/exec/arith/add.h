@@ -1,5 +1,5 @@
-#ifndef __Add_H__
-#define __Add_H__
+#ifndef __ADD_H__
+#define __ADD_H__
 
 make_helper(add_i2a_b);
 make_helper(add_i2rm_b);
