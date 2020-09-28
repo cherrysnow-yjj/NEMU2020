@@ -4,6 +4,7 @@
 #include "con-tran/jbe.h"
 #include "con-tran/je.h"
 #include "con-tran/jmp.h"
+#include "con-tran/jne.h"
 #include "con-tran/ret.h"
 
 #include "data-mov/leave.h"
