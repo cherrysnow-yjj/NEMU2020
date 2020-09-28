@@ -8,6 +8,7 @@
 
 #include "data-mov/leave.h"
 #include "data-mov/mov.h"
+#include "data-mov/movzx.h"
 #include "data-mov/xchg.h"
 #include "data-mov/push.h"
 #include "data-mov/pop.h"
