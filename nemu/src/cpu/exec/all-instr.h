@@ -4,6 +4,7 @@
 #include "con-tran/jbe.h"
 #include "con-tran/je.h"
 #include "con-tran/jg.h"
+#include "con-tran/jl.h"
 #include "con-tran/jle.h"
 #include "con-tran/jmp.h"
 #include "con-tran/jne.h"
