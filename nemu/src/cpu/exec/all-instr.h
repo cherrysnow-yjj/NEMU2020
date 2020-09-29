@@ -29,6 +29,7 @@
 #include "arith/inc.h"
 #include "arith/mul.h"
 #include "arith/neg.h"
+#include "arith/sbb.h"
 #include "arith/sub.h"
 
 #include "logic/and.h"
