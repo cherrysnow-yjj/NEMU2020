@@ -10,6 +10,7 @@
 #include "con-tran/jle.h"
 #include "con-tran/jmp.h"
 #include "con-tran/jne.h"
+#include "con-tran/jns.h"
 #include "con-tran/js.h"
 #include "con-tran/ret.h"
 
