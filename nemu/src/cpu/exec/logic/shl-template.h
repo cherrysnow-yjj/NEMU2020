@@ -14,6 +14,9 @@ static void do_execute () {
 	 * in PA will test the flags updated by this instruction.
 	 */
 
+	int ans = dest;
+    	cpu.ZF = !ans;
+
 	print_asm_template2();
 }
 
