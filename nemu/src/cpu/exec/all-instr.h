@@ -14,6 +14,7 @@
 #include "con-tran/js.h"
 #include "con-tran/ret.h"
 
+#include "data-mov/cltd.h"
 #include "data-mov/leave.h"
 #include "data-mov/lods.h"
 #include "data-mov/mov.h"
