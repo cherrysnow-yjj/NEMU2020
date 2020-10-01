@@ -44,6 +44,7 @@
 #include "logic/test.h"
 #include "logic/xor.h"
 
+#include "string/movs.h"
 #include "string/rep.h"
 
 #include "misc/misc.h"
