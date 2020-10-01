@@ -13,6 +13,7 @@
 #include "con-tran/ret.h"
 
 #include "data-mov/leave.h"
+#include "data-mov/lods.h"
 #include "data-mov/mov.h"
 #include "data-mov/movsx.h"
 #include "data-mov/movzx.h"
