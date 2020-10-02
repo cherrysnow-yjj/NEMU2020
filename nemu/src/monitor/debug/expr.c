@@ -209,7 +209,7 @@ uint32_t eval(int l, int r) {
 				else assert(0);
 			}
 		}
-		else if (tokens[l].type == VALUE) {
+		if (tokens[l].type == VALUE) {
 			bool ff;
 			num = getvalue(tokens[l].str, &ff);
 			if (!ff) num = -1;
