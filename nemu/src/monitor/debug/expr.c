@@ -173,9 +173,9 @@ uint32_t eval(int l, int r) {
 		uint32_t num = 0;
 		if (tokens[l].type == NUMBER)
 			sscanf(tokens[l].str, "%d", &num);
-		if (tokens[l].type == HNUMBER)
+		else if (tokens[l].type == HNUMBER)
                         sscanf(tokens[l].str, "%x", &num);
-		if (tokens[l].type == REGISTER) {
+		else if (tokens[l].type == REGISTER) {
 			if (strlen(tokens[l].str) == 3) {
 				int i;
 				for (i = R_EAX; i <= R_EDI; i++) {
@@ -209,10 +209,10 @@ uint32_t eval(int l, int r) {
 				else assert(0);
 			}
 		}
-		if (tokens[l].type == VALUE) {
-			bool ff;
-			num = getvalue(tokens[l].str, &ff);
-			if (!ff) num = -1;
+		else if (tokens[l].type == VALUE) {
+			bool suc;
+			num = getvalue(tokens[l].str, &suc);
+			if (!suc) num = -1;
 		}
 		else assert(0);
 		return num;
@@ -261,11 +261,11 @@ uint32_t expr(char *e, bool *success) {
 
 	int i;
 	for (i = 0; i < nr_token; i++) {
-		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != VALUE && tokens[i - 1].type != ')'))) {
+		if (tokens[i].type=='*' && (i==0 || (tokens[i-1].type!=NUMBER && tokens[i-1].type!=HNUMBER && tokens[i-1].type!=REGISTER && tokens[i-1].type!=VALUE && tokens[i-1].type!=')'))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != VALUE && tokens[i - 1].type != ')'))) {
+		if (tokens[i].type=='-' && (i==0 || (tokens[i-1].type!=NUMBER && tokens[i-1].type!=HNUMBER && tokens[i-1].type!=REGISTER && tokens[i-1].type!=VALUE && tokens[i-1].type!=')'))) {
                         tokens[i].type = MINUS;
                         tokens[i].priority = 6;
                 }
