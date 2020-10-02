@@ -14,7 +14,7 @@ uint32_t getvalue(char* s, bool* success) {
 	for (i = 0; i < nr_symtab_entry; i++) {
 		if ((symtab[i].st_info & 0xf) == STT_OBJECT) {
 			char tmp[30];
-			strcpy(tmp, strtab+symtab[i].st_name);
+			strcpy(tmp, strtab + symtab[i].st_name);
 			if (strcmp(tmp, s) == 0) {
 				return symtab[i].st_value;					
 			}

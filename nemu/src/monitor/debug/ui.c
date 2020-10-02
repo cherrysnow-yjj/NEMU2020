@@ -83,7 +83,7 @@ static int cmd_p(char *args) {
 	uint32_t num;
 	bool suc;
 	num = expr(args, &suc);
-	if (suc) printf("0x%x:\t%d\n", num, num);
+	if (suc) printf("0x%08x:\t%d\n", num, num);
 	else assert(0);
 	return 0;
 }
