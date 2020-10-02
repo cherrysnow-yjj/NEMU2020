@@ -7,7 +7,7 @@
 #include <regex.h>
 
 enum {
-	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER
+	NOTYPE = 256, EQ, NEQ, AND, OR, MINUS, POINTER, NUMBER, HNUMBER, REGISTER, VALUE
 
 	/* TODO: Add more token types */
 
@@ -38,6 +38,7 @@ static struct rule {
 	{"!", '!', 6},					// not
 	{"\\(", '(', 7},				// left bracket
 	{"\\)", ')', 7},				// right bracket
+	{"\\b[a-zA-Z_0-9]+", VALUE, 0},                 // value
 };
 
 #define NR_REGEX (sizeof(rules) / sizeof(rules[0]) )
@@ -140,7 +141,7 @@ int dominant_operator(int l, int r) {
 	int min_priority = 10;
 	int oper = l;
 	for (i = l; i <= r; i++) {
-		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER)
+		if (tokens[i].type == NUMBER || tokens[i].type == HNUMBER || tokens[i].type == REGISTER || tokens[i].type == VALUE)
 			continue;
 		int cnt = 0;
 		bool key = true;
@@ -160,6 +161,8 @@ int dominant_operator(int l, int r) {
 	}
 	return oper;
 }
+
+uint32_t getvalue(char* s, bool* success);
 
 uint32_t eval(int l, int r) {
 	if (l > r) {
@@ -206,6 +209,12 @@ uint32_t eval(int l, int r) {
 				else assert(0);
 			}
 		}
+		else if (tokens[l].type == VALUE) {
+			bool ff;
+			num = getvalue(tokens[l].str, &ff);
+			if (!ff) num = -1;
+		}
+		else assert(0);
 		return num;
 	}
 	else if (check_parentheses(l, r) == true) {
@@ -252,11 +261,11 @@ uint32_t expr(char *e, bool *success) {
 
 	int i;
 	for (i = 0; i < nr_token; i++) {
-		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != ')'))) {
+		if (tokens[i].type == '*' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != VALUE && tokens[i - 1].type != ')'))) {
 			tokens[i].type = POINTER;
 			tokens[i].priority = 6;
 		}
-		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != ')'))) {
+		if (tokens[i].type == '-' && (i == 0 || (tokens[i - 1].type != NUMBER && tokens[i - 1].type != HNUMBER && tokens[i - 1].type != REGISTER && tokens[i - 1].type != VALUE && tokens[i - 1].type != ')'))) {
                         tokens[i].type = MINUS;
                         tokens[i].priority = 6;
                 }
