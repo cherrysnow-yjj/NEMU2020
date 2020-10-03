@@ -12,4 +12,4 @@
 #include "movs-template.h"
 #undef DATA_BYTE
 
-make_helper_v(movs_l);
+make_helper_v(movs_1);
