@@ -16,7 +16,6 @@
 
 #include "data-mov/cltd.h"
 #include "data-mov/leave.h"
-#include "data-mov/lods.h"
 #include "data-mov/mov.h"
 #include "data-mov/movsx.h"
 #include "data-mov/movzx.h"
@@ -48,6 +47,7 @@
 #include "logic/test.h"
 #include "logic/xor.h"
 
+#include "string/lods.h" 
 #include "string/movs.h"
 #include "string/rep.h"
 #include "string/scas.h"
