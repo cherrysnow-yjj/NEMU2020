@@ -10,6 +10,13 @@
 void cpu_exec(uint32_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
+typedef struct {
+	swaddr_t prev_ebp;
+	swaddr_t ret_addr;
+	uint32_t args[4];
+}PartOfStackFrame;
+
+/* We use the `readline' library to provide more flexibility to read from stdin. */
 char* rl_gets() {
 	static char *line_read = NULL;
 
@@ -107,6 +114,34 @@ static int cmd_d(char *args) {
 	return 0;
 }
 
+void getfunc(swaddr_t addr,char* s);
+
+static int cmd_bt(char *args) {
+	PartOfStackFrame s;
+	swaddr_t addr = reg_l(R_EBP);
+	s.ret_addr = cpu.eip;
+	char ss[32];
+	int cnt = 0;
+	while (addr) {
+		getfunc(s.ret_addr,ss);
+		// printf("%s\n",ss);	
+		if(ss[0]=='\0') break;
+		printf("id:%d 0x%x: ",cnt++,s.ret_addr);
+		printf("%s (",ss);
+		int i;
+		for(i=0;i<4;i++) {
+			s.args[i] = swaddr_read(addr+8+4*i,4);
+			printf("%d",s.args[i]);
+			printf("%c",i==3?')':',');		
+		}
+		s.ret_addr=swaddr_read(addr+4,4);
+		s.prev_ebp=swaddr_read(addr,4);
+		addr = s.prev_ebp;
+		printf("\n");
+	}
+	return 0;
+}
+
 static struct {
 	char *name;
 	char *description;
@@ -120,7 +155,8 @@ static struct {
 	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x },
 	{ "p", "Expression evaluation", cmd_p },
 	{ "w", "Stop the execution of the program if the result of the expression has changed", cmd_w },
-	{ "d", "Delete the Nth watchpoint", cmd_d }
+	{ "d", "Delete the Nth watchpoint", cmd_d },
+	{ "bt", "Print stack frame chain", cmd_bt }
 	/* TODO: Add more commands */
 };
 
