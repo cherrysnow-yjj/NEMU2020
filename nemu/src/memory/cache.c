@@ -14,6 +14,7 @@ void init_cache()
     {
         cache[i].valid = false;
     }
+    printf("check");
 }
 
 uint32_t cache_read(hwaddr_t addr)
