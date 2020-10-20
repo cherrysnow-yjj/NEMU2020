@@ -14,7 +14,7 @@ void init_cache()
     {
         cache[i].valid = false;
     }
-    printf("check");
+    // printf("check\n");
 }
 
 uint32_t cache_read(hwaddr_t addr)
@@ -43,6 +43,9 @@ uint32_t cache_read(hwaddr_t addr)
 
     cache[i].valid = true;
     cache[i].tag = tag;
+
+    printf("check\n");
+
     return i;
 }
 
