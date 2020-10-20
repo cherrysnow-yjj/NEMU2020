@@ -76,7 +76,5 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
         }
     }
 
-    cache_write(addr, len, data);
-
-    printf("check\n");
+    // printf("check\n");
 }
