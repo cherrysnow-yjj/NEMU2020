@@ -76,5 +76,7 @@ void cache_write(hwaddr_t addr, size_t len, uint32_t data)
         }
     }
 
+    dram_write(addr, len, data);
+
     // printf("check\n");
 }
