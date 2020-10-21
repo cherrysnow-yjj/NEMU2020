@@ -14,7 +14,6 @@ void init_cache()
     {
         cache[i].valid = false;
     }
-    // printf("check\n");
     for (i = 0; i < SECONDCACHE_WAY_SIZE * SECONDCACHE_SET_SIZE; i++)
     {
         secondcache[i].valid = false;
@@ -52,8 +51,6 @@ uint32_t cache_read(hwaddr_t addr)
 
     cache[i].valid = true;
     cache[i].tag = tag;
-
-    // printf("check\n");
 
     return i;
 }
