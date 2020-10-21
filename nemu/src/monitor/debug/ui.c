@@ -10,65 +10,80 @@
 void cpu_exec(uint32_t);
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
-typedef struct {
+typedef struct
+{
 	swaddr_t prev_ebp;
 	swaddr_t ret_addr;
 	uint32_t args[4];
-}PartOfStackFrame;
+} PartOfStackFrame;
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
-char* rl_gets() {
+char *rl_gets()
+{
 	static char *line_read = NULL;
 
-	if (line_read) {
+	if (line_read)
+	{
 		free(line_read);
 		line_read = NULL;
 	}
 
 	line_read = readline("(nemu) ");
 
-	if (line_read && *line_read) {
+	if (line_read && *line_read)
+	{
 		add_history(line_read);
 	}
 
 	return line_read;
 }
 
-static int cmd_c(char *args) {
+static int cmd_c(char *args)
+{
 	cpu_exec(-1);
 	return 0;
 }
 
-static int cmd_q(char *args) {
+static int cmd_q(char *args)
+{
 	return -1;
 }
 
 static int cmd_help(char *args);
 
-static int cmd_si(char *args) {
+static int cmd_si(char *args)
+{
 	int num = 0;
-	if (args == NULL) num = 1;
-	else sscanf(args, "%d", &num);
+	if (args == NULL)
+		num = 1;
+	else
+		sscanf(args, "%d", &num);
 	cpu_exec(num);
 	return 0;
 }
 
-static int cmd_info(char *args) {
+static int cmd_info(char *args)
+{
 	int i;
-	if (args[0] == 'r') {
-		for (i = R_EAX; i <= R_EDI; i++) {
+	if (args[0] == 'r')
+	{
+		for (i = R_EAX; i <= R_EDI; i++)
+		{
 			printf("%s\t0x%08x\n", regsl[i], reg_l(i));
 		}
 		printf("eip\t0x%08x\n", cpu.eip);
 	}
-	else if (args[0] == 'w') {
+	else if (args[0] == 'w')
+	{
 		info_wp();
 	}
-	else assert(0);
+	else
+		assert(0);
 	return 0;
 }
 
-static int cmd_x(char *args) {
+static int cmd_x(char *args)
+{
 	int n, i;
 	swaddr_t start_address;
 	bool suc;
@@ -76,106 +91,125 @@ static int cmd_x(char *args) {
 	sscanf(cmd, "%d", &n);
 	args = cmd + strlen(cmd) + 1;
 	start_address = expr(args, &suc);
-	if (!suc) assert(0);
+	if (!suc)
+		assert(0);
 	printf("0x%08x: ", start_address);
-	for (i = 1; i <= n; i++) {
-		printf("0x%08x ", swaddr_read(start_address, 4));
+	for (i = 1; i <= n; i++)
+	{
+		printf("0x%08x ", swaddr_read(start_address, 4, R_DS));
 		start_address += 4;
 	}
 	printf("\n");
 	return 0;
 }
 
-static int cmd_p(char *args) {
+static int cmd_p(char *args)
+{
 	uint32_t num;
 	bool suc;
 	num = expr(args, &suc);
-	if (suc) printf("0x%08x:\t%d\n", num, num);
-	else assert(0);
+	if (suc)
+		printf("0x%08x:\t%d\n", num, num);
+	else
+		assert(0);
 	return 0;
 }
 
-static int cmd_w(char *args) {
+static int cmd_w(char *args)
+{
 	WP *f;
 	bool suc;
 	f = new_wp();
 	printf("Watchpoint %d: %s\n", f->NO, args);
 	f->val = expr(args, &suc);
 	strcpy(f->str, args);
-	if (!suc) assert(0);
+	if (!suc)
+		assert(0);
 	printf("Value: %d\n", f->val);
 	return 0;
 }
 
-static int cmd_d(char *args) {
+static int cmd_d(char *args)
+{
 	int num;
 	sscanf(args, "%d", &num);
 	delete_wp(num);
 	return 0;
 }
 
-void getfunc(swaddr_t addr,char* s);
+void getfunc(swaddr_t addr, char *s);
 
-static int cmd_bt(char *args) {
+static int cmd_bt(char *args)
+{
 	PartOfStackFrame s;
 	swaddr_t addr = reg_l(R_EBP);
 	s.ret_addr = cpu.eip;
 	char ss[32];
 	int cnt = 0;
-	while (addr) {
-		getfunc(s.ret_addr,ss);
-		// printf("%s\n",ss);	
-		if(ss[0]=='\0') break;
-		printf("id:%d 0x%x: ",cnt++,s.ret_addr);
-		printf("%s (",ss);
+	while (addr)
+	{
+		getfunc(s.ret_addr, ss);
+		// printf("%s\n",ss);
+		if (ss[0] == '\0')
+			break;
+		printf("id:%d 0x%x: ", cnt++, s.ret_addr);
+		printf("%s (", ss);
 		int i;
-		for(i=0;i<4;i++) {
-			s.args[i] = swaddr_read(addr+8+4*i,4);
-			printf("%d",s.args[i]);
-			printf("%c",i==3?')':',');		
+		for (i = 0; i < 4; i++)
+		{
+			s.args[i] = swaddr_read(addr + 8 + 4 * i, 4, R_SS);
+			printf("%d", s.args[i]);
+			printf("%c", i == 3 ? ')' : ',');
 		}
-		s.ret_addr=swaddr_read(addr+4,4);
-		s.prev_ebp=swaddr_read(addr,4);
+		s.ret_addr = swaddr_read(addr + 4, 4, R_SS);
+		s.prev_ebp = swaddr_read(addr, 4, R_SS);
 		addr = s.prev_ebp;
 		printf("\n");
 	}
 	return 0;
 }
 
-static struct {
+static struct
+{
 	char *name;
 	char *description;
-	int (*handler) (char *);
-} cmd_table [] = {
-	{ "help", "Display informations about all supported commands", cmd_help },
-	{ "c", "Continue the execution of the program", cmd_c },
-	{ "q", "Exit NEMU", cmd_q },
-	{ "si", "Step into implementation of N instructions after the suspension of execution (when N is unknown, the default is 1)", cmd_si },
-	{ "info", "r for print register state and w for print watchpoint information", cmd_info },
-	{ "x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x },
-	{ "p", "Expression evaluation", cmd_p },
-	{ "w", "Stop the execution of the program if the result of the expression has changed", cmd_w },
-	{ "d", "Delete the Nth watchpoint", cmd_d },
-	{ "bt", "Print stack frame chain", cmd_bt }
+	int (*handler)(char *);
+} cmd_table[] = {
+	{"help", "Display informations about all supported commands", cmd_help},
+	{"c", "Continue the execution of the program", cmd_c},
+	{"q", "Exit NEMU", cmd_q},
+	{"si", "Step into implementation of N instructions after the suspension of execution (when N is unknown, the default is 1)", cmd_si},
+	{"info", "r for print register state and w for print watchpoint information", cmd_info},
+	{"x", "Calculate the value of the expression and regard the result as the starting memory address", cmd_x},
+	{"p", "Expression evaluation", cmd_p},
+	{"w", "Stop the execution of the program if the result of the expression has changed", cmd_w},
+	{"d", "Delete the Nth watchpoint", cmd_d},
+	{"bt", "Print stack frame chain", cmd_bt}
 	/* TODO: Add more commands */
 };
 
 #define NR_CMD (sizeof(cmd_table) / sizeof(cmd_table[0]))
 
-static int cmd_help(char *args) {
+static int cmd_help(char *args)
+{
 	/* extract the first argument */
 	char *arg = strtok(NULL, " ");
 	int i;
 
-	if(arg == NULL) {
+	if (arg == NULL)
+	{
 		/* no argument given */
-		for(i = 0; i < NR_CMD; i ++) {
+		for (i = 0; i < NR_CMD; i++)
+		{
 			printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
 		}
 	}
-	else {
-		for(i = 0; i < NR_CMD; i ++) {
-			if(strcmp(arg, cmd_table[i].name) == 0) {
+	else
+	{
+		for (i = 0; i < NR_CMD; i++)
+		{
+			if (strcmp(arg, cmd_table[i].name) == 0)
+			{
 				printf("%s - %s\n", cmd_table[i].name, cmd_table[i].description);
 				return 0;
 			}
@@ -185,20 +219,26 @@ static int cmd_help(char *args) {
 	return 0;
 }
 
-void ui_mainloop() {
-	while(1) {
+void ui_mainloop()
+{
+	while (1)
+	{
 		char *str = rl_gets();
 		char *str_end = str + strlen(str);
 
 		/* extract the first token as the command */
 		char *cmd = strtok(str, " ");
-		if(cmd == NULL) { continue; }
+		if (cmd == NULL)
+		{
+			continue;
+		}
 
 		/* treat the remaining string as the arguments,
 		 * which may need further parsing
 		 */
 		char *args = cmd + strlen(cmd) + 1;
-		if(args >= str_end) {
+		if (args >= str_end)
+		{
 			args = NULL;
 		}
 
@@ -208,13 +248,21 @@ void ui_mainloop() {
 #endif
 
 		int i;
-		for(i = 0; i < NR_CMD; i ++) {
-			if(strcmp(cmd, cmd_table[i].name) == 0) {
-				if(cmd_table[i].handler(args) < 0) { return; }
+		for (i = 0; i < NR_CMD; i++)
+		{
+			if (strcmp(cmd, cmd_table[i].name) == 0)
+			{
+				if (cmd_table[i].handler(args) < 0)
+				{
+					return;
+				}
 				break;
 			}
 		}
 
-		if(i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
+		if (i == NR_CMD)
+		{
+			printf("Unknown command '%s'\n", cmd);
+		}
 	}
 }

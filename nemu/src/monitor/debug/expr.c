@@ -227,7 +227,7 @@ uint32_t eval(int l, int r) {
 			uint32_t val = eval(l + 1, r);
 			// printf("val = %d\n", val);
 			switch(tokens[l].type) {
-				case POINTER: return swaddr_read(val, 4);
+				case POINTER: return swaddr_read(val, 4, R_DS);
 				case MINUS: return -val;
 				case '!': return !val;
 				default: assert(0);
