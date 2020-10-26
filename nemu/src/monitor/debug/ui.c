@@ -149,7 +149,6 @@ static int cmd_bt(char *args)
 	while (addr)
 	{
 		getfunc(s.ret_addr, ss);
-		// printf("%s\n",ss);
 		if (ss[0] == '\0')
 			break;
 		printf("id:%d 0x%x: ", cnt++, s.ret_addr);
@@ -169,6 +168,22 @@ static int cmd_bt(char *args)
 	return 0;
 }
 
+static int cmd_page(char *args)
+{
+	if (args == NULL)
+		return 0;
+	lnaddr_t lnaddr;
+	sscanf(args, "%x", &lnaddr);
+	hwaddr_t hwaddr = page_translate(lnaddr, 1);
+	if (cpu.cr0.protect_enable && cpu.cr0.paging)
+	{
+		printf("0x%x -> 0x%x", lnaddr, hwaddr);
+	}
+	else
+		printf("\033[1;33mPage address convertion is invalid.\n\033[0m");
+	return 0;
+}
+
 static struct
 {
 	char *name;
@@ -184,7 +199,8 @@ static struct
 	{"p", "Expression evaluation", cmd_p},
 	{"w", "Stop the execution of the program if the result of the expression has changed", cmd_w},
 	{"d", "Delete the Nth watchpoint", cmd_d},
-	{"bt", "Print stack frame chain", cmd_bt}
+	{"bt", "Print stack frame chain", cmd_bt},
+	{"page", "convert va to pa", cmd_page}
 	/* TODO: Add more commands */
 };
 
