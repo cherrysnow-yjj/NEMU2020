@@ -11,6 +11,7 @@ void init_regex();
 void init_wp_pool();
 void init_ddr3();
 void init_cache();
+void init_tlb();
 
 FILE *log_fp = NULL;
 
@@ -29,6 +30,18 @@ static void welcome()
 static void init_eflags()
 {
 	cpu.EFLAGS = 2;
+}
+
+static void init_cr0()
+{
+	cpu.cr0.protect_enable = 0;
+	cpu.cr0.paging = 0;
+}
+
+static void init_seg()
+{
+	cpu.cs.base_addr = 0;
+	cpu.cs.seg_limit = 0xffffffff;
 }
 
 void init_monitor(int argc, char *argv[])
@@ -98,12 +111,12 @@ void restart()
 
 	/* Set the initial instruction pointer. */
 	cpu.eip = ENTRY_START;
+
 	init_eflags();
-	cpu.cr0.protect_enable = 0;
-	cpu.cr0.paging = 0;
-	cpu.cs.base_addr = 0;
-	cpu.cs.seg_limit = 0xffffffff;
+	init_cr0();
+	init_seg();
 	init_cache();
+	init_tlb();
 
 	/* Initialize DRAM. */
 	init_ddr3();

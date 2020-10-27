@@ -1,6 +1,6 @@
 #include "memory/tlb.h"
 
-void tlb_init()
+void init_tlb()
 {
     int i;
     for (i = 0; i < TLB_SIZE; i++)

@@ -15,7 +15,7 @@ typedef struct
 
 TLB tlb[TLB_SIZE];
 
-void tlb_init();
+void init_tlb();
 void tlb_write(uint32_t tag, uint32_t page);
 uint32_t tlb_read(uint32_t tag);
 
