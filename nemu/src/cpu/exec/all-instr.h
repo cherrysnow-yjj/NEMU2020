@@ -30,6 +30,7 @@
 #include "intr/int.h"
 #include "intr/cli.h"
 #include "intr/iret.h"
+#include "intr/sti.h"
 
 #include "arith/adc.h"
 #include "arith/add.h"
