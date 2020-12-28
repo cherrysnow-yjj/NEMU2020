@@ -10,9 +10,13 @@
 #include "con-tran/jl.h"
 #include "con-tran/jle.h"
 #include "con-tran/jmp.h"
+#include "con-tran/jnb.h"
 #include "con-tran/jne.h"
 #include "con-tran/jno.h"
+#include "con-tran/jnp.h"
 #include "con-tran/jns.h"
+#include "con-tran/jo.h"
+#include "con-tran/jp.h"
 #include "con-tran/js.h"
 #include "con-tran/ret.h"
 
