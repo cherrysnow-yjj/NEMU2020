@@ -12,6 +12,8 @@ void init_wp_pool();
 void init_ddr3();
 void init_cache();
 void init_tlb();
+void init_device();
+void init_sdl();
 
 FILE *log_fp = NULL;
 
@@ -62,6 +64,10 @@ void init_monitor(int argc, char *argv[])
 
 	/* Display welcome message. */
 	welcome();
+
+	init_device();
+
+	init_sdl();
 }
 
 #ifdef USE_RAMDISK
