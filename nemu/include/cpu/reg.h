@@ -6,19 +6,45 @@
 
 enum
 {
-	R_EAX, R_ECX, R_EDX, R_EBX, R_ESP, R_EBP, R_ESI, R_EDI
+	R_EAX,
+	R_ECX,
+	R_EDX,
+	R_EBX,
+	R_ESP,
+	R_EBP,
+	R_ESI,
+	R_EDI
 };
 enum
 {
-	R_AX, R_CX, R_DX, R_BX, R_SP, R_BP, R_SI, R_DI
+	R_AX,
+	R_CX,
+	R_DX,
+	R_BX,
+	R_SP,
+	R_BP,
+	R_SI,
+	R_DI
 };
 enum
 {
-	R_AL, R_CL, R_DL, R_BL, R_AH, R_CH, R_DH, R_BH
+	R_AL,
+	R_CL,
+	R_DL,
+	R_BL,
+	R_AH,
+	R_CH,
+	R_DH,
+	R_BH
 };
 enum
 {
-	R_ES, R_CS, R_SS, R_DS, R_FS, R_GS
+	R_ES,
+	R_CS,
+	R_SS,
+	R_DS,
+	R_FS,
+	R_GS
 };
 
 /* TODO: Re-organize the `CPU_state' structure to match the register
@@ -74,28 +100,30 @@ typedef struct
 				uint32_t EFLAGS;
 				struct
 				{
-					uint32_t CF :   1;
-					uint32_t :      1;
-					uint32_t PF :   1;
-					uint32_t :      1;
-					uint32_t AF :   1;
-					uint32_t :      1;
-					uint32_t ZF :   1;
-					uint32_t SF :   1;
-					uint32_t TF :   1;
-					uint32_t IF :   1;
-					uint32_t DF :   1;
-					uint32_t OF :   1;
+					uint32_t CF : 1;
+					uint32_t : 1;
+					uint32_t PF : 1;
+					uint32_t : 1;
+					uint32_t AF : 1;
+					uint32_t : 1;
+					uint32_t ZF : 1;
+					uint32_t SF : 1;
+					uint32_t TF : 1;
+					uint32_t IF : 1;
+					uint32_t DF : 1;
+					uint32_t OF : 1;
 					uint32_t IOPL : 2;
-					uint32_t NT :   1;
-					uint32_t :      1;
-					uint32_t RF :   1;
-					uint32_t VM :   1;
-					uint32_t :     14;
+					uint32_t NT : 1;
+					uint32_t : 1;
+					uint32_t RF : 1;
+					uint32_t VM : 1;
+					uint32_t : 14;
 				};
 			};
 		};
 	};
+
+	bool INTR;
 
 	CR0 cr0;
 	CR3 cr3;
@@ -113,6 +141,12 @@ typedef struct
 		uint32_t base_addr;
 		uint16_t seg_limit;
 	} gdtr;
+
+	struct IDTR
+	{
+		uint32_t base_addr;
+		uint16_t seg_limit;
+	} idtr;
 
 	swaddr_t eip;
 
@@ -134,14 +168,14 @@ typedef struct
 		struct
 		{
 			uint32_t base_addr2 : 8;
-			uint32_t type : 	  5;
-			uint32_t dpl : 		  2;
-			uint32_t p : 		  1;
+			uint32_t type : 5;
+			uint32_t dpl : 2;
+			uint32_t p : 1;
 			uint32_t seg_limit2 : 4;
-			uint32_t avl : 		  1;
-			uint32_t : 			  1;
-			uint32_t b : 		  1;
-			uint32_t g : 		  1;
+			uint32_t avl : 1;
+			uint32_t : 1;
+			uint32_t b : 1;
+			uint32_t g : 1;
 			uint32_t base_addr3 : 8;
 		};
 		uint32_t second;
@@ -152,23 +186,46 @@ typedef union
 {
 	struct
 	{
-		uint8_t p :     1;
-		uint8_t rw :    1;
-		uint8_t us :    1;
-		uint8_t pwt :   1;
-		uint8_t pcd :   1;
-		uint8_t a :     1;
-		uint8_t d :     1;
-		uint8_t ps :    1;
-		uint8_t g :     1;
+		uint8_t p : 1;
+		uint8_t rw : 1;
+		uint8_t us : 1;
+		uint8_t pwt : 1;
+		uint8_t pcd : 1;
+		uint8_t a : 1;
+		uint8_t d : 1;
+		uint8_t ps : 1;
+		uint8_t g : 1;
 		uint8_t avail : 3;
 		uint32_t base : 20;
 	};
 	uint32_t val;
 } Page_entry;
 
+typedef struct
+{
+	union
+	{
+		struct
+		{
+			uint32_t offset1 : 16;
+			uint32_t selector : 16;
+			uint32_t pad0 : 8;
+			uint32_t type : 4;
+			uint32_t system : 1;
+			uint32_t privilege_level : 2;
+			uint32_t present : 1;
+			uint32_t offset2 : 16;
+		};
+		struct
+		{
+			uint32_t first;
+			uint32_t second;
+		};
+	};
+} GATE_descriptor;
+
 extern CPU_state cpu;
-SEG_descriptor* seg_des;
+SEG_descriptor *seg_des;
 void seg_do(uint8_t sreg);
 static inline int check_reg_index(int index)
 {
