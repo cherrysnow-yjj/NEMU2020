@@ -72,6 +72,9 @@
 #include "string/scas.h"
 #include "string/stos.h"
 
+#include "io/in.h"
+#include "io/out.h"
+
 #include "misc/misc.h"
 
 #include "special/special.h"
