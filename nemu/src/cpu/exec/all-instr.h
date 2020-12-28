@@ -51,6 +51,7 @@
 #include "logic/or.h"
 #include "logic/sar.h"
 #include "logic/sete.h"
+#include "logic/setge.h"
 #include "logic/setne.h"
 #include "logic/shl.h"
 #include "logic/shr.h"
