@@ -2,6 +2,7 @@
 
 #include "con-tran/call.h"
 #include "con-tran/ja.h"
+#include "con-tran/jb.h"
 #include "con-tran/jbe.h"
 #include "con-tran/je.h"
 #include "con-tran/jg.h"
@@ -10,6 +11,7 @@
 #include "con-tran/jle.h"
 #include "con-tran/jmp.h"
 #include "con-tran/jne.h"
+#include "con-tran/jno.h"
 #include "con-tran/jns.h"
 #include "con-tran/js.h"
 #include "con-tran/ret.h"
