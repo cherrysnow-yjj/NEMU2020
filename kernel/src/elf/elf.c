@@ -14,6 +14,7 @@ void ramdisk_read(uint8_t *, uint32_t, uint32_t);
 #define STACK_SIZE (1 << 20)
 
 void create_video_mapping();
+void video_mapping_write_test();
 uint32_t get_ucr3();
 
 uint32_t loader()
@@ -80,6 +81,8 @@ uint32_t loader()
 #ifdef HAS_DEVICE
 	create_video_mapping();
 #endif
+
+	video_mapping_write_test();
 
 	write_cr3(get_ucr3());
 #endif
