@@ -37,6 +37,7 @@ uint32_t loader()
 	nemu_assert(*p_magic == elf_magic);
 
 	/* Load each program segment */
+	//panic("please implement me");
 	int i;
 	ph = (void *)(buf + elf->e_phoff);
 	for (i = 0; i < elf->e_phnum; i++, ph++)
@@ -44,11 +45,16 @@ uint32_t loader()
 		/* Scan the program header table, load each segment into memory */
 		if (ph->p_type == PT_LOAD)
 		{
+			ph->p_vaddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
 			/* TODO: read the content of the segment from the ELF file 
 			 * to the memory region [VirtAddr, VirtAddr + FileSiz)
 			 */
-			ph->p_vaddr = mm_malloc(ph->p_vaddr, ph->p_memsz);
+
+#ifdef HAS_DEVICE
+			ide_read((void *)ph->p_vaddr, ph->p_offset, ph->p_filesz);
+#else
 			ramdisk_read((void *)ph->p_vaddr, ph->p_offset, ph->p_filesz);
+#endif
 
 			/* TODO: zero the memory region 
 			 * [VirtAddr + FileSiz, VirtAddr + MemSiz)
