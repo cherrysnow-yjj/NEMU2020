@@ -68,16 +68,16 @@ void cpu_exec(volatile uint32_t n)
 			fputc('.', stderr);
 		}
 #endif
-		printf("cc%x\n",n);
+		//printf("cc%x\n",n);
 		/* Execute one instruction, including instruction fetch,
 		 * instruction decode, and the actual execution. */
-		printf("%x\n",cpu.eip);
+		//printf("%x\n",cpu.eip);
 		int instr_len = exec(cpu.eip);
-		printf("%x\n",instr_len);
-		printf("3\n");
+		//printf("%x\n",instr_len);
+		//printf("3\n");
 		cpu.eip += instr_len;
 		//printf("4\n");
-		printf("%x\n",cpu.eip);
+		//printf("%x\n",cpu.eip);
 #ifdef DEBUG
 		print_bin_instr(eip_temp, instr_len);
 		strcat(asm_buf, assembly);
@@ -89,15 +89,15 @@ void cpu_exec(volatile uint32_t n)
 #endif
 
 		/* TODO: check watchpoints here. */
-		printf("c1%x\n",nemu_state);
+		//printf("c1%x\n",nemu_state);
 		/*if (check_wp())
 			nemu_state = STOP;*/
-		printf("c2%x\n",nemu_state);
+		//printf("c2%x\n",nemu_state);
 #ifdef HAS_DEVICE
 		extern void device_update();
 		device_update();
 #endif
-		printf("cc%x\n",n);
+		//printf("cc%x\n",n);
 		if (nemu_state != RUNNING)
 		{
 			return;
@@ -108,7 +108,7 @@ void cpu_exec(volatile uint32_t n)
 			i8259_ack_intr();
 			raise_intr(intr_no);
 		}*/
-		printf("cc%x\n",n);
+		//printf("cc%x\n",n);
 	}
 
 	if (nemu_state == RUNNING)
