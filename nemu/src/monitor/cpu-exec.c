@@ -97,7 +97,7 @@ void cpu_exec(volatile uint32_t n)
 		extern void device_update();
 		device_update();
 #endif
-
+		printf("cc%x\n",n);
 		if (nemu_state != RUNNING)
 		{
 			return;
