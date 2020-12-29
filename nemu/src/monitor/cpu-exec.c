@@ -108,6 +108,7 @@ void cpu_exec(volatile uint32_t n)
 			i8259_ack_intr();
 			raise_intr(intr_no);
 		}*/
+		printf("cc%x\n",n);
 	}
 
 	if (nemu_state == RUNNING)
