@@ -68,16 +68,16 @@ void cpu_exec(volatile uint32_t n)
 			fputc('.', stderr);
 		}
 #endif
-
+		printf("cc%x\n",n);
 		/* Execute one instruction, including instruction fetch,
 		 * instruction decode, and the actual execution. */
-		//printf("%x\n",cpu.eip);
+		printf("%x\n",cpu.eip);
 		int instr_len = exec(cpu.eip);
-		//printf("%x\n",instr_len);
-		//printf("3\n");
+		printf("%x\n",instr_len);
+		printf("3\n");
 		cpu.eip += instr_len;
 		//printf("4\n");
-		//printf("%x\n",cpu.eip);
+		printf("%x\n",cpu.eip);
 #ifdef DEBUG
 		print_bin_instr(eip_temp, instr_len);
 		strcat(asm_buf, assembly);
