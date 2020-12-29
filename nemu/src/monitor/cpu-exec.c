@@ -90,8 +90,8 @@ void cpu_exec(volatile uint32_t n)
 
 		/* TODO: check watchpoints here. */
 		printf("c1%x\n",nemu_state);
-		if (check_wp())
-			nemu_state = STOP;
+		/*if (check_wp())
+			nemu_state = STOP;*/
 		printf("c2%x\n",nemu_state);
 #ifdef HAS_DEVICE
 		extern void device_update();
