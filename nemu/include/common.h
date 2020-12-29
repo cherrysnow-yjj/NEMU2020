@@ -1,8 +1,8 @@
 #ifndef __COMMON_H__
 #define __COMMON_H__
 
-#define USE_RAMDISK
-//#define HAS_DEVICE
+// #define USE_RAMDISK
+#define HAS_DEVICE
 #define DEBUG
 #define LOG_FILE
 

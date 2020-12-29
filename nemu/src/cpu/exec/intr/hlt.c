@@ -3,10 +3,10 @@
 
 make_helper(hlt)
 {
-    //extern void device_update();
+    extern void device_update();
     while (cpu.INTR == 0)
     {
-        //device_update();
+        device_update();
     }
     //print_asm("hlt");
     return 1;
