@@ -54,6 +54,7 @@
 #include "arith/sub.h"
 
 #include "logic/and.h"
+#include "logic/bt.h"
 #include "logic/cld.h"
 #include "logic/not.h"
 #include "logic/or.h"
