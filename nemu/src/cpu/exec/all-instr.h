@@ -37,6 +37,7 @@
 #include "intr/cli.h"
 #include "intr/iret.h"
 #include "intr/sti.h"
+#include "intr/hlt.h"
 
 #include "arith/adc.h"
 #include "arith/add.h"

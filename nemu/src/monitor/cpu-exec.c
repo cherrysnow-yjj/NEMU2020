@@ -2,6 +2,7 @@
 #include "cpu/helper.h"
 #include <setjmp.h>
 #include "monitor/watchpoint.h"
+#include "cpu/reg.h"
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -16,28 +17,36 @@ int exec(swaddr_t);
 
 char assembly[80];
 char asm_buf[128];
+void raise_intr(uint8_t);
+uint8_t i8259_query_intr();
+void i8259_ack_intr();
 
 /* Used with exception handling. */
 jmp_buf jbuf;
 
-void print_bin_instr(swaddr_t eip, int len) {
+void print_bin_instr(swaddr_t eip, int len)
+{
 	int i;
 	int l = sprintf(asm_buf, "%8x:   ", eip);
-	for(i = 0; i < len; i ++) {
+	for (i = 0; i < len; i++)
+	{
 		l += sprintf(asm_buf + l, "%02x ", instr_fetch(eip + i, 1));
 	}
 	sprintf(asm_buf + l, "%*.s", 50 - (12 + 3 * len), "");
 }
 
 /* This function will be called when an `int3' instruction is being executed. */
-void do_int3() {
+void do_int3()
+{
 	printf("\nHit breakpoint at eip = 0x%08x\n", cpu.eip);
 	nemu_state = STOP;
 }
 
 /* Simulate how the CPU works. */
-void cpu_exec(volatile uint32_t n) {
-	if(nemu_state == END) {
+void cpu_exec(volatile uint32_t n)
+{
+	if (nemu_state == END)
+	{
 		printf("Program execution has ended. To restart the program, exit NEMU and run again.\n");
 		return;
 	}
@@ -49,43 +58,60 @@ void cpu_exec(volatile uint32_t n) {
 
 	setjmp(jbuf);
 
-	for(; n > 0; n --) {
+	for (; n > 0; n--)
+	{
 #ifdef DEBUG
 		swaddr_t eip_temp = cpu.eip;
-		if((n & 0xffff) == 0) {
+		if ((n & 0xffff) == 0)
+		{
 			/* Output some dots while executing the program. */
 			fputc('.', stderr);
 		}
 #endif
-		// printf("eip: 0x%x\n", cpu.eip);
+
 		/* Execute one instruction, including instruction fetch,
 		 * instruction decode, and the actual execution. */
+		//printf("%x\n",cpu.eip);
 		int instr_len = exec(cpu.eip);
-
+		//printf("%x\n",instr_len);
+		//printf("3\n");
 		cpu.eip += instr_len;
-
+		//printf("4\n");
+		//printf("%x\n",cpu.eip);
 #ifdef DEBUG
 		print_bin_instr(eip_temp, instr_len);
 		strcat(asm_buf, assembly);
 		Log_write("%s\n", asm_buf);
-		if(n_temp < MAX_INSTR_TO_PRINT) {
+		if (n_temp < MAX_INSTR_TO_PRINT)
+		{
 			printf("%s\n", asm_buf);
 		}
 #endif
 
 		/* TODO: check watchpoints here. */
-		
-		if (!check_wp()) {
-			printf("Watchpoint has been triggered!\n");
+
+		if (check_wp())
 			nemu_state = STOP;
-		}
+
 #ifdef HAS_DEVICE
 		extern void device_update();
 		device_update();
 #endif
 
-		if(nemu_state != RUNNING) { return; }
+		if (nemu_state != RUNNING)
+		{
+			return;
+		}
+		if (cpu.INTR & cpu.IF)
+		{
+			uint32_t intr_no = i8259_query_intr();
+			i8259_ack_intr();
+			raise_intr(intr_no);
+		}
 	}
 
-	if(nemu_state == RUNNING) { nemu_state = STOP; }
+	if (nemu_state == RUNNING)
+	{
+		nemu_state = STOP;
+	}
 }

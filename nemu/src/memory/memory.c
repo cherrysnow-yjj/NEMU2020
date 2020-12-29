@@ -6,6 +6,9 @@
 
 uint32_t dram_read(hwaddr_t, size_t);
 void dram_write(hwaddr_t, size_t, uint32_t);
+int is_mmio(hwaddr_t);
+uint32_t mmio_read(hwaddr_t, size_t, int);
+void mmio_write(hwaddr_t, size_t, uint32_t, int);
 
 /* Memory accessing interfaces */
 
@@ -45,27 +48,38 @@ hwaddr_t page_translate(lnaddr_t addr, size_t len)
 
 uint32_t hwaddr_read(hwaddr_t addr, size_t len)
 {
-	int id = cache_read(addr);
-	uint32_t offset = addr & (CACHE_BLOCK_SIZE - 1);
-	uint8_t tmp[2 * BURST_LEN];
-	if (offset + len > CACHE_BLOCK_SIZE)
+	int index = is_mmio(addr);
+	if (index >= 0)
 	{
-		int id2 = cache_read(addr + CACHE_BLOCK_SIZE - offset);
-		memcpy(tmp, cache[id].data + offset, CACHE_BLOCK_SIZE - offset);
-		memcpy(tmp + CACHE_BLOCK_SIZE - offset, cache[id2].data, len - (CACHE_BLOCK_SIZE - offset));
+		return mmio_read(addr, len, index) & (~0u >> ((4 - len) << 3));
 	}
-	else
-	{
-		memcpy(tmp, cache[id].data + offset, len);
+	/*int id = cache_read(addr);
+	uint32_t offset = addr&(CACHE_BLOCK_SIZE-1);
+	uint8_t tmp[2*BURST_LEN];
+	if(offset+len>CACHE_BLOCK_SIZE) {
+		int id2 = cache_read(addr+CACHE_BLOCK_SIZE-offset);	
+		memcpy(tmp,cache[id].data+offset,CACHE_BLOCK_SIZE-offset);
+		memcpy(tmp+CACHE_BLOCK_SIZE-offset,cache[id2].data,len-(CACHE_BLOCK_SIZE-offset));
 	}
-	int zero = 0;
-	uint32_t ans = unalign_rw(tmp + zero, 4) & (~0u >> ((4 - len) << 3));
-	return ans;
+	else {
+		memcpy(tmp,cache[id].data+offset,len);
+	}
+	int zero=0;
+	uint32_t ans = unalign_rw(tmp+zero,4)&(~0u >> ((4 - len) << 3));
+	return ans;*/
+	return dram_read(addr, len) & (~0u >> ((4 - len) << 3));
 }
 
 void hwaddr_write(hwaddr_t addr, size_t len, uint32_t data)
 {
-	cache_write(addr, len, data);
+	int index = is_mmio(addr);
+	if (index >= 0)
+	{
+		mmio_write(addr, len, data, index);
+		return;
+	}
+	//cache_write(addr, len, data);
+	dram_write(addr, len, data);
 }
 
 uint32_t lnaddr_read(lnaddr_t addr, size_t len)
