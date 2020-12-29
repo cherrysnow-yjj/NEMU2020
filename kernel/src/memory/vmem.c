@@ -16,7 +16,6 @@ void create_video_mapping()
 	 * [0xa0000, 0xa0000 + SCR_SIZE) for user program. You may define
 	 * some page tables to create this mapping.
 	 */
-	//panic("please implement me");
 	PDE *tmp = (PDE *)va_to_pa(get_updir());
 	tmp[0].page_frame = (uint32_t)va_to_pa(vtable) >> 12;
 	tmp[0].present = 1;
