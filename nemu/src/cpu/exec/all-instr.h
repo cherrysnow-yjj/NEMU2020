@@ -21,6 +21,7 @@
 #include "con-tran/ret.h"
 
 #include "data-mov/cltd.h"
+#include "data-mov/cmovcc.h"
 #include "data-mov/leave.h"
 #include "data-mov/lgdt.h"
 #include "data-mov/lidt.h"
